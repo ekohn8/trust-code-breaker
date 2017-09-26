@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import getWord from '../utils/getWord';
 import letterMatch from '../utils/letterMatch';
+import { callApi } from '../helpers'
 
 export default class Game extends Component {
     constructor(props){
@@ -77,16 +78,51 @@ export default class Game extends Component {
         this.checkForWin()
     }
 
+    convertToString = (word) => {
+        return word.map(letter => {
+            return letter.props.letter
+        }).join('')
+    }
+
     checkWord = () => {
-        let total = this.state.wordGuess.split("").filter((item,index) => {if(item === this.state.secretWord[index].props.letter){index++} return index})
-        if(total.length === this.state.secretWord.length) {alert("Would you look at that!")}
+        let total = this.state.wordGuess.split("").filter((item,index) => {
+            if(item.toLowerCase() === this.state.secretWord[index].props.letter.toLowerCase()){
+                index++
+            } 
+            return index
+        })
+        if (total.length === this.state.secretWord.length) {
+            alert("Would you look at that!")
+            callApi('', {
+                method: 'post',
+                body: {
+                    fields: {
+                        word: this.convertToString(this.state.secretWord),
+                        attempts: this.state.nGuesses
+                    }
+                }
+            })
+        }
         this.clearInput(true, total.length === this.state.secretWord.length)
 
     }
 
     checkForWin = () => {
-        let total = this.state.secretWord.filter((item) => {return item.props.visible===true} );
-        if(total.length === this.state.secretWord.length) {alert("Would you look at that!")}
+        let total = this.state.secretWord.filter((item) => {
+            return item.props.visible===true
+        });
+        if (total.length === this.state.secretWord.length) {
+            alert("Would you look at that!")
+            callApi('', {
+                method: 'post',
+                body: {
+                    fields: {
+                        word: this.convertToString(this.state.secretWord),
+                        attempts: this.state.nGuesses
+                    }
+                }
+            })
+        }
     }
 
     clearInput = (lFlag, wFlag) => {
