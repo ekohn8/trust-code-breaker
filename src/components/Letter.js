@@ -1,10 +1,10 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
 
-const Letter = (props) => {
+var Letter = (props) => {
     return (
-        <Paper style={localStyles.holder} zDepth={1} >
-            {props.letter}
+        <Paper style={localStyles.visible} zDepth={4} >
+            {props.visible?props.letter:""}
         </Paper>
     );
 }
@@ -12,12 +12,21 @@ const Letter = (props) => {
 export default Letter;
 
 const localStyles = {
-    holder: {
+    visible: {
         height : 100,
         width : 70,
         margin : 5,
         textAlign : 'center',
         display : 'inline-block',
-        fontSize: '5rem'
+        fontSize: '5rem',
+    },
+    hidden: {
+        height : 100,
+        width : 70,
+        margin : 5,
+        textAlign : 'center',
+        display : 'inline-block',
+        fontSize: '5rem',
+        color: 'white'
     }
 }
