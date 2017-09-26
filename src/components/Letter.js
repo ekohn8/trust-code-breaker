@@ -3,8 +3,8 @@ import Paper from 'material-ui/Paper';
 
 var Letter = (props) => {
     return (
-        <Paper style={localStyles.visible} zDepth={4} >
-            {props.visible?props.letter:""}
+        <Paper style={props.flash?localStyles.flash:localStyles.letter} zDepth={4}>
+                {props.visible?props.letter:""}
         </Paper>
     );
 }
@@ -12,21 +12,24 @@ var Letter = (props) => {
 export default Letter;
 
 const localStyles = {
-    visible: {
+    letter: {
         height : 100,
         width : 70,
         margin : 5,
         textAlign : 'center',
         display : 'inline-block',
         fontSize: '5rem',
+        // marginBottom: 50
+        // backgroundColor: 'green',
     },
-    hidden: {
-        height : 100,
-        width : 70,
+    flash: {
+        height : 120,
+        width : 90,
         margin : 5,
         textAlign : 'center',
         display : 'inline-block',
         fontSize: '5rem',
-        color: 'white'
+        backgroundColor: 'green',
+        marginBottom: 100
     }
 }

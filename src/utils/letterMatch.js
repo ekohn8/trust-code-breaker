@@ -4,7 +4,7 @@ export default function letterMatch(letter,word) {
     if(letter.length > 1){alert("One letter at a time, friend")}
     //standard flexRow
     let temp = word
-    let indexArray = temp.filter((item) => {if(item.props.letter.toLowerCase() === letter.toLowerCase()){return item.key}})
+    let indexArray = temp.filter((item) => {return item.props.letter.toLowerCase() === letter.toLowerCase()} )
 
     return indexArray
 };
