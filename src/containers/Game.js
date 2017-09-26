@@ -54,12 +54,12 @@ export default class Game extends Component {
         let letter = temp[int].props.letter;
         let backgroundColor = temp[int].props.backgroundColor;
         temp[int] = <Letter flash={false} visible={true} letter={letter} key={int}/>
-        var flasher = setInterval(()=>{this.flash(int)},250)
+        var flasher = setInterval(()=>{this.flashGreen(int)},100)
         var clear = setTimeout(()=>{clearInterval(flasher);this.setState({secretWord: temp,
         })},1000)
     }
 
-    flash = (int) => {
+    flashGreen = (int) => {
         let temp = this.state.secretWord;
         let letter = temp[int].props.letter;
         let flash = temp[int].props.flash;
@@ -69,10 +69,15 @@ export default class Game extends Component {
         })
     }
 
+    flashRed = () => {
+        
+    }
+
     checkLetter = () => {
         let indexArray = letterMatch(this.state.letterGuess,this.state.secretWord);
         let index = indexArray.map((item,index) => {this.flip(item.key); return index})
         console.log("Index", index)
+        if(index.length===0){this.flashRed()}
         this.clearInput(index.length !== 0, true)
         this.checkForWin()
     }

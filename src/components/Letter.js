@@ -4,7 +4,7 @@ import Paper from 'material-ui/Paper';
 var Letter = (props) => {
     return (
         <Paper style={props.flash?localStyles.flash:localStyles.letter} zDepth={4}>
-                {props.visible?props.letter:""}
+                {props.visible?props.letter:" "}
         </Paper>
     );
 }
@@ -23,8 +23,8 @@ const localStyles = {
         // backgroundColor: 'green',
     },
     flash: {
-        height : 120,
-        width : 90,
+        height : 400,
+        width : 400,
         margin : 5,
         textAlign : 'center',
         display : 'inline-block',
