@@ -100,7 +100,7 @@ export default class Game extends Component {
 
     checkWord = () => {
         let total = [];
-        if(this.state.wordGuess.length > 6){
+        if(this.state.wordGuess.length > this.state.secretWord.length){
             total = [1];
         }else{
             total = this.state.wordGuess.split("").filter((item,index) => {
