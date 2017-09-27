@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
-import AppBar from 'material-ui/AppBar';
-import Paper from 'material-ui/Paper';
+import {
+    Paper,
+    AppBar,
+    RaisedButton,
+    TextField,
+    Drawer,
+    MenuItem
+ } from 'material-ui';
 import Letter from '../components/Letter';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import getWord from '../utils/getWord';
 import letterMatch from '../utils/letterMatch';
 import { callApi } from '../helpers'
+import {
+  Route,
+  Link
+} from 'react-router-dom'
 
 export default class Game extends Component {
     constructor(props){
         super(props)
             this.state = {
+                open: false,
                 secretWord:'',
                 letterGuess:'',
                 wordGuess:'',
@@ -88,7 +97,7 @@ export default class Game extends Component {
         let total = this.state.wordGuess.split("").filter((item,index) => {
             if(item.toLowerCase() === this.state.secretWord[index].props.letter.toLowerCase()){
                 index++
-            } 
+            }
             return index
         })
         if (total.length === this.state.secretWord.length) {
@@ -142,6 +151,12 @@ export default class Game extends Component {
             nGuesses: this.state.nGuesses+1,
         })
     }
+    handleToggle = () => {
+        this.setState({open: !this.state.open})
+    }
+    handleClose = () => {
+        this.setState({open: false})
+    }
 
   render() {
     let wordArray = this.state.secretWord;
@@ -149,9 +164,6 @@ export default class Game extends Component {
     let wordError = `Secret word is not '${this.state.lastWord.word}'`
     return (
         <Paper style={localStyles.container}>
-            <AppBar
-                title="Code Breaker"
-            />
             <Paper style={localStyles.flexRow}>
                 <TextField
                     hintText=""

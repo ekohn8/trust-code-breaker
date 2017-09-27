@@ -5,10 +5,13 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 // import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const MyApp = () => (
     <MuiThemeProvider>
-        <App />
+        <Router>
+            <App/>
+        </Router>
     </MuiThemeProvider>
 )
 
