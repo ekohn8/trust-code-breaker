@@ -54,11 +54,12 @@ class App extends Component {
                             Trust Game (Higher Stakes Baby)
                     </MenuItem>
                 </Drawer>
-
+                {/* Here is where all the routing is done */}
                 <Switch>
                     <Route exact path="/" component={Game} />
                     <Route path="/trust" component={Trust} />
                 </Switch>
+
             </Paper>
     );
   }
