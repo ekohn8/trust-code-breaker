@@ -4,11 +4,18 @@ import '../App.css';
 
 
 var Letter = (props) => {
-    return (
-        <Paper circle={true} className={props.className} style={props.flash?localStyles.flash:localStyles.letter} zDepth={4}>
-                {props.visible?props.letter:" "}
-        </Paper>
-    );
+    if(!props.space){
+        return (
+            <Paper className={props.className} style={props.flash?localStyles.flash:localStyles.letter} zDepth={4}>
+                    {props.visible?props.letter:" "}
+            </Paper>
+        );
+    }else{
+        return (
+            <div style={localStyles.blank} />
+        )
+    }
+
 }
 
 export default Letter;
@@ -30,5 +37,10 @@ const localStyles = {
         display : 'inline-block',
         fontSize: '5rem',
         backgroundColor: 'green',
+    },
+    blank: {
+        height : 100,
+        width : 100,
+        margin : 5,
     }
 }

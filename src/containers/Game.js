@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
 import Letter from '../components/Letter';
+import Chip from 'material-ui/Chip';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import getWord from '../utils/getWord';
 import letterMatch from '../utils/letterMatch';
@@ -18,6 +20,8 @@ export default class Game extends Component {
             this.state = {
                 secretWord:'',
                 letterGuess:'',
+                letterGuessHistory: [],
+                wordGuessHistory: [],
                 wordGuess:'',
                 nGuesses: 0,
                 lastLetter: {
@@ -30,14 +34,26 @@ export default class Game extends Component {
                 },
                 flashRed: false,
                 screen: 'paper',
-                infoModal: false
+                infoModal: false,
+                category: '',
+                timer: 0,
             }
         }
 
     componentWillMount() {
-        let wordArray = getWord();
-        this.setState({
-            secretWord: wordArray,
+         let choices = ['country','animal','pirate']
+         let category = choices[Math.round(Math.random()*2)]
+         console.log(category)
+        callApi('', {category: category}).then(value => {
+            console.log(value.records)
+
+            let int = Math.round(Math.random()*(value.records.length-1))
+            console.log(int)
+            let res = getWord(value.records[int].fields.Word)
+            this.setState({
+                secretWord: res,
+                category: value.records[int].fields.Category,
+            })
         })
     }
 
@@ -81,13 +97,23 @@ export default class Game extends Component {
 
     flashRed = () => {
         var flasher = setInterval(()=>{this.setState({flashRed: !this.state.flashRed})},250)
-        var clear = setTimeout(()=>{clearInterval(flasher)},1000)
+        setTimeout(()=>{clearInterval(flasher)},1000)
     }
 
     checkLetter = () => {
+        this.setState({nGuesses: this.state.nGuesses+1})
         let indexArray = letterMatch(this.state.letterGuess,this.state.secretWord);
         let index = indexArray.map((item,index) => {this.flip(item.key); return index})
         if(index.length===0){this.flashRed()}
+        if(this.state.letterGuess.match(/[a-z]/i))
+        {
+            let lGH = this.state.letterGuessHistory
+            lGH.push(this.state.letterGuess)
+            lGH.sort()
+            this.setState({
+                letterGuessHistory: lGH
+            })
+        }
         this.clearInput(index.length !== 0, true)
         this.checkForWin()
     }
@@ -99,6 +125,7 @@ export default class Game extends Component {
     }
 
     checkWord = () => {
+        this.setState({nGuesses: this.state.nGuesses+1})
         let total = [];
         if(this.state.wordGuess.length > this.state.secretWord.length){
             total = [1];
@@ -109,6 +136,15 @@ export default class Game extends Component {
         if (total.length === this.state.secretWord.length) {
             this.gameEndSequence()
         }else{
+            if(this.state.wordGuess.length > 0)
+            {
+                let wGH = this.state.wordGuessHistory
+                wGH.push(this.state.wordGuess)
+                wGH.sort()
+                this.setState({
+                    wordGuessHistory: wGH
+                })
+            }
             this.flashRed();
         }
         this.clearInput(true, total.length === this.state.secretWord.length)
@@ -137,7 +173,8 @@ export default class Game extends Component {
                 correct: wFlag,
             },
             letterGuess: '',
-            nGuesses: this.state.nGuesses+1,
+            wordGuess: '',
+            // nGuesses: this.state.nGuesses+1,
         })
     }
 
@@ -157,28 +194,39 @@ export default class Game extends Component {
               })
          },5000)
 
-        callApi('', {
-            method: 'post',
-            body: {
-                fields: {
-                    word: this.convertToString(this.state.secretWord),
-                    attempts: this.state.nGuesses
-                }
-            }
-        })
+        // callApi('', {
+        //     method: 'post',
+        //     body: {
+        //         fields: {
+        //             word: this.convertToString(this.state.secretWord),
+        //             attempts: this.state.nGuesses
+        //         }
+        //     }
+        // })
+    }
+
+    runTimer = () => {
+        let previous = this.state.timer;
+        let next = previous + 1;
+        setTimeout(()=>{this.setState({timer: next})},1000)
     }
 
   render() {
+    this.state.screen === 'paper' && this.runTimer();
     let wordArray = this.state.secretWord;
     let letterError = `Secret word does not contain '${this.state.lastLetter.letter}'`
     let wordError = `Secret word is not '${this.state.lastWord.word}'`
+    let category = `Category: ${this.state.category}`
     return (
         <Paper style={localStyles.container}>
             <AppBar
-                title="Code Breaker"
+                title= "Code Breaker"
                 iconElementLeft={<FontIcon className="material-icons"></FontIcon>}
+                iconElementRight={<FlatButton label={category} />}
+
             />
-            <Paper style={this.state.flashRed ? localStyles.flashRed : localStyles.flexRow}>
+            <Paper>
+                <div style={this.state.flashRed ? localStyles.flashRed : localStyles.flexRow}>
                 <TextField
                     hintText=""
                     floatingLabelText="Guess a letter here"
@@ -200,6 +248,16 @@ export default class Game extends Component {
                     errorText = {this.state.lastWord.correct?"":wordError}
 
                 />
+                </div>
+                <div style={localStyles.flexRow}>
+                    <div style={localStyles.historyContainer}>
+                        {this.state.letterGuessHistory.map(
+                            letter => {return <Chip key={Math.random()*100} >{letter}</Chip>})}
+                    </div>
+                    <div style={localStyles.historyContainer}>
+                        {this.state.wordGuessHistory.map(word => {return <Chip>{word}</Chip>})}
+                    </div>
+                </div>
                 {/* <RaisedButton
                     style={{marginTop: 30, marginBottom: 30}}
                     secondary={true}
@@ -229,14 +287,23 @@ export default class Game extends Component {
                     </div>
                 }
                 {(this.state.screen==='modal') &&
-                    <GameEndModal/>
+                    <GameEndModal score={(200-this.state.timer)*(25-this.state.nGuesses)}/>
                 }
                 {this.state.infoModal &&
                     <InfoModal/>
                 }
             </Paper>
+            <div style={localStyles.flexRow}>
+                <h3>
+                    Number of guesses: {this.state.nGuesses}
+                </h3>
+                <h3>
+                    Total time: {this.state.timer}
+                </h3>
+            </div>
             <RaisedButton
                 label="Why do I get to play this game?"
+                secondary={true}
                 onClick={() => this.setState({infoModal: true})}
             />
         </Paper>
@@ -262,7 +329,8 @@ const localStyles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
     },
     flashRed: {
         display: 'flex',
@@ -274,6 +342,14 @@ const localStyles = {
     textInput: {
         justifyContent: 'center',
         alignItems: 'center',
-
+    },
+    historyContainer: {
+        marginTop: 10,
+        marginBottom: 5,
+        display: 'flex',
+        width: '35vw',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
     }
 }

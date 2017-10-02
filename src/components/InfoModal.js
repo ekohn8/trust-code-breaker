@@ -45,7 +45,6 @@ export default class GameEndModal extends React.Component {
           We are collecting gameplay data to be used in the implementation of the real product.
           Feel free to play as much as you'd like and consider it a contribution to the blueberry squad.
           Thank you! <br/><br/>  -Blueberry Gameplay Research Department
-          <br/><br/> (Hint: The category for this version is "Countries")
 
         </Dialog>
       </div>

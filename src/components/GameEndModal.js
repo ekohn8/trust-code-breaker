@@ -32,15 +32,18 @@ export default class GameEndModal extends React.Component {
         onClick={this.handleClose}
       />,
     ];
+    let score = this.props.score
 
     return (
       <div>
         <Dialog
-          title="Congratulations big winner!"
+          title="Congratulations!"
           actions={actions}
           modal={true}
           open={this.state.open}
         >
+            Your score for last code: {score} <br/>
+            
           Want to play again?
         </Dialog>
       </div>

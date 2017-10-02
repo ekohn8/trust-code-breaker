@@ -1,7 +1,0 @@
----
-applications:
-  host: code-breaker
-  name: code-breaker
-  domain: mybluemix.net
-  memory: 32M
-  stack: cflinuxfs2

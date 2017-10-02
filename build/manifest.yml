@@ -1,0 +1,5 @@
+applications:
+- path: .
+  domain: mybluemix.net
+  name: trust-code-breaker
+  host: trust-code-breaker

@@ -4,8 +4,8 @@ export const callApi = (uri, opts = {}) => {
     if (opts.body) {
         opts.body = JSON.stringify(opts.body)
     }
-    console.log(opts)
-    return fetch(env.api.url + uri, {
+    // console.log(opts)
+    return fetch((opts.method?env.api.url:env.api.url2+opts.category) + uri, {
         ...opts,
         method: opts.method || 'GET',
         headers: {

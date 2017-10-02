@@ -1,15 +1,24 @@
 import React from 'react'
 import Letter from '../components/Letter';
-import wordList from '../assets/wordList.js';
 
-export default function getWord() {
-    let index = Math.round(Math.random()*32)
-    let randArray = wordList(index).split("").map((random,index) => {
+export default function getWord(word) {
+    console.log("Word",word)
+    let randArray = word.split("").map((random,index) => {
         console.log(random)
         index++;
-        return (
-            <Letter visible={false} key={index-1} letter={random}/>
-        )
+        if(random.match(/[a-z]/i))
+        {
+            return (
+                <Letter visible={false} key={index-1} letter={random}/>
+            )
+        }else if(random === "&" || random === "''" || random === "-")
+        {
+            return (
+                <Letter visible={true} key={index-1} letter={random}/>
+            )
+        }else {
+            return <Letter space={true} visible={true} key={index-1} letter={random}/>
+        }
     });
     return randArray;
 };
