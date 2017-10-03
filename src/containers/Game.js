@@ -4,11 +4,11 @@ import Paper from 'material-ui/Paper';
 import Letter from '../components/Letter';
 import Chip from 'material-ui/Chip';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import getWord from '../utils/getWord';
 import letterMatch from '../utils/letterMatch';
 import GameEndModal from '../components/GameEndModal';
+import CategoryMenu from '../components/CategoryMenu';
 import InfoModal from '../components/InfoModal';
 import FontIcon from 'material-ui/FontIcon';
 import { callApi } from '../helpers';
@@ -43,12 +43,12 @@ export default class Game extends Component {
     componentWillMount() {
          let choices = ['country','animal','pirate']
          let category = choices[Math.round(Math.random()*2)]
-         console.log(category)
+        //  console.log(category)
         callApi('', {category: category}).then(value => {
-            console.log(value.records)
+            // console.log(value.records)
 
             let int = Math.round(Math.random()*(value.records.length-1))
-            console.log(int)
+            // console.log(int)
             let res = getWord(value.records[int].fields.Word)
             this.setState({
                 secretWord: res,
@@ -194,15 +194,15 @@ export default class Game extends Component {
               })
          },5000)
 
-        // callApi('', {
-        //     method: 'post',
-        //     body: {
-        //         fields: {
-        //             word: this.convertToString(this.state.secretWord),
-        //             attempts: this.state.nGuesses
-        //         }
-        //     }
-        // })
+        callApi('', {
+            method: 'post',
+            body: {
+                fields: {
+                    word: this.convertToString(this.state.secretWord),
+                    attempts: this.state.nGuesses
+                }
+            }
+        })
     }
 
     runTimer = () => {
@@ -211,18 +211,42 @@ export default class Game extends Component {
         setTimeout(()=>{this.setState({timer: next})},1000)
     }
 
+    setCategory = (cat) => {
+        // console.log("Cat", cat)
+        // console.log("catgegory", this.state.category)
+        if(cat.toLowerCase() === this.state.category.toLowerCase()){
+            return
+        }else{
+        this.setState({
+            category: cat
+        })
+        callApi('', {category: cat}).then(value => {
+            // console.log(value.records)
+
+            let int = Math.round(Math.random()*(value.records.length-1))
+            // console.log(int)
+            let res = getWord(value.records[int].fields.Word)
+            this.setState({
+                secretWord: res,
+                category: value.records[int].fields.Category,
+            })
+        })
+    }
+
+    }
+
   render() {
     this.state.screen === 'paper' && this.runTimer();
     let wordArray = this.state.secretWord;
     let letterError = `Secret word does not contain '${this.state.lastLetter.letter}'`
     let wordError = `Secret word is not '${this.state.lastWord.word}'`
-    let category = `Category: ${this.state.category}`
+    let category = `Selected category: ${this.state.category}`
     return (
         <Paper style={localStyles.container}>
             <AppBar
                 title= "Code Breaker"
                 iconElementLeft={<FontIcon className="material-icons"></FontIcon>}
-                iconElementRight={<FlatButton label={category} />}
+                iconElementRight={<CategoryMenu onClick={(cat) => this.setCategory(cat)} text={category}/>}
 
             />
             <Paper>

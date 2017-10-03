@@ -20,7 +20,7 @@ export default class GameEndModal extends React.Component {
   };
 
   reset = () => {
-      console.log("Reset");
+    //   console.log("Reset");
       setTimeout(()=>{window.location.reload(true)},500);
   };
 
@@ -43,7 +43,7 @@ export default class GameEndModal extends React.Component {
           open={this.state.open}
         >
             Your score for last code: {score} <br/>
-            
+
           Want to play again?
         </Dialog>
       </div>

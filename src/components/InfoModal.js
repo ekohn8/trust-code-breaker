@@ -20,7 +20,7 @@ export default class GameEndModal extends React.Component {
   };
 
   reset = () => {
-      console.log("Reset");
+    //   console.log("Reset");
       setTimeout(()=>{window.location.reload(true)},500);
   };
 

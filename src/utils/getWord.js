@@ -4,7 +4,7 @@ import Letter from '../components/Letter';
 export default function getWord(word) {
     console.log("Word",word)
     let randArray = word.split("").map((random,index) => {
-        console.log(random)
+        // console.log(random)
         index++;
         if(random.match(/[a-z]/i))
         {
